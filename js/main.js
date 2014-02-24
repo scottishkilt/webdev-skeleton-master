@@ -1,23 +1,39 @@
 
 var width = 1000,
-    height = 700
+    height = 500
 	
 var color = d3.scale.category20();
 
 var svg = d3.select("body").append("svg")
     .attr("width", width)
     .attr("height", height);
+	
 
+$(function(){
+
+    var currentValue = $('#currentValue');
+
+    $('#alphaSlider').change(function(){
+        currentValue.html(this.value);
+		var alpha = $(this).val();
+		_.debounce(drawGraph(alpha), 5000);
+    });
+
+    // Trigger the event on load, so
+    // the value field is populated:
+
+    $('#alphaSlider').change();
+
+});
+
+var drawGraph= function (alpha){
 var force = d3.layout.force()
     .gravity(.05)
     .distance(100)
     .charge(-100)
     .size([width, height]);
 	
-
-
 var filePath = "cooccurrence_lol.json";
-var alpha = .01;
 d3.json( filePath, function( data) {
   var cooc = data.matrix;
   var backBoned = [];
@@ -102,3 +118,4 @@ node.append("text")
     node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
   });
 });
+};
